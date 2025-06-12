@@ -13,12 +13,15 @@ export default function App(){
     // return newDice
     return new Array(10)
                     .fill(0)
-                    .map(()=>Math.ceil(Math.random()*6))
+                    .map(()=> ({value :Math.ceil(Math.random()*6), 
+                               isHeld:true
+                    }))
   }
   const diceElements = dieValue.map((element,index)=>{
         return <Die 
           key = {index}
-          value = {element}
+          value = {element.value}
+          isHeld = {element.isHeld}
           />
         })
 
