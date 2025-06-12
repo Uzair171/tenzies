@@ -29,8 +29,33 @@ export default function App(){
           />
         })
 
+  // let gamewon = false
+  //   function won(){
+  //     dieValue.map(element =>{
+  //     if(element.isHeld){
+  //       gamewon = true
+  //     }else{
+  //       gamewon = false
+  //     }
+  //   })
+  //   console.log(gamewon)
+  //   }
+  
+
+  if(dieValue.every(die => die.isHeld)&&
+     dieValue.every(die => die.value === dieValue[0].value)
+  ){
+    console.log("Game Won")
+  }
+
   function rollElement(){
-    setDieValue(generateAllNewDice)
+    setDieValue(oldValue=>{
+      return oldValue.map(element=>{
+        return element.isHeld === false ? 
+        {...element, value : Math.ceil(Math.random()*6) } : element
+      })
+    })
+    //won()
   }
 
   function hold(id){
@@ -43,6 +68,10 @@ export default function App(){
   }
   return(
     <main>
+      <h1 className="title">Tenzies</h1>
+      <p className="instructions">Roll until all dice 
+        are the same. Click each die to freeze it at its 
+        current value between rolls.</p>
       <div className="die-div">
         {diceElements}
         {/* <Die value = {value[1]}/>
