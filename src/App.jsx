@@ -1,10 +1,22 @@
-import { useState } from "react"
+import { useState,useRef,useEffect } from "react"
 import Die from "./components/Die"
 import { nanoid } from "nanoid"
+import Confetti from 'react-confetti'
+
+
+
 
 export default function App(){
 
-  const [dieValue,setDieValue] = useState(generateAllNewDice())
+  // const buttonRef = useRef(null)
+
+  // useEffect(() => {
+  //       if (gameWon) {
+  //           buttonRef.current.focus()
+  //       }
+  //   }, [gameWon])
+
+  const [dieValue,setDieValue] = useState(() => generateAllNewDice())
   function generateAllNewDice(){
     // const newDice =[]
     // for(let i=0;i<10;i++){
@@ -41,20 +53,29 @@ export default function App(){
   //   console.log(gamewon)
   //   }
   
-
+  let gameWon = false
   if(dieValue.every(die => die.isHeld)&&
      dieValue.every(die => die.value === dieValue[0].value)
   ){
-    console.log("Game Won")
+    gameWon = !gameWon
+    document.getElementById("roll-button").innerHTML = "New Game"
+    document.getElementById("roll-button").style.width = "100px"
+    
   }
 
   function rollElement(){
-    setDieValue(oldValue=>{
+    if(document.getElementById("roll-button") .innerHTML === "Roll"){
+      setDieValue(oldValue=>{
       return oldValue.map(element=>{
         return element.isHeld === false ? 
         {...element, value : Math.ceil(Math.random()*6) } : element
       })
     })
+    }else if(document.getElementById("roll-button") .innerHTML === "New Game"){
+      setDieValue(generateAllNewDice)
+      gameWon = false
+      document.getElementById("roll-button").innerHTML = "Roll"
+    }
     //won()
   }
 
@@ -66,13 +87,26 @@ export default function App(){
       })
     })
   }
+
+  function confetti() {
+  const { width, height } = useWindowSize()
+  return (
+    <Confetti
+      width={width}
+      height={height}
+    />
+  )
+}
   return(
     <main>
+   
       <h1 className="title">Tenzies</h1>
       <p className="instructions">Roll until all dice 
         are the same. Click each die to freeze it at its 
         current value between rolls.</p>
       <div className="die-div">
+        {
+        gameWon && <Confetti />}
         {diceElements}
         {/* <Die value = {value[1]}/>
         <Die value = {value[2]}/>
@@ -87,6 +121,8 @@ export default function App(){
       </div>
 
       <button 
+    
+      id="roll-button"
       className="roll-button"
       onClick={rollElement}
       >
